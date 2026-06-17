@@ -1,0 +1,262 @@
+// Yencinas Bodega — Esquema de datos
+// v1 local: SQLite. Para producción cambiar provider a "postgresql".
+// SQLite (vía Prisma) no soporta enums ni Json: los estados van como String
+// y los permisos del perfil como String con JSON serializado.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ----------------------- Perfiles y usuarios -----------------------
+
+model Perfil {
+  id            String        @id @default(cuid())
+  nombre        String        @unique
+  descripcion   String?
+  permisos      String // JSON: { modulo: { ver, crear, editar, eliminar, aprobar } }
+  esBase        Boolean       @default(false)
+  colaboradores Colaborador[]
+  createdAt     DateTime      @default(now())
+}
+
+model Colaborador {
+  id               String         @id @default(cuid())
+  // Identidad
+  nombre           String
+  apellidoPaterno  String
+  apellidoMaterno  String?
+  correo           String         @unique
+  passwordHash     String
+  // Datos personales (editable por usuario)
+  telefonoPersonal String?
+  rutPersonal      String?        @unique
+  direccion        String?
+  ciudad           String?
+  region           String?
+  fechaNacimiento  DateTime?
+  numeroEmergencia String?
+  fotoPerfil       String?
+  // Datos empresa (gestión admin)
+  area             String?
+  cargo            String?
+  telefonoCorporativo String?
+  centrodeCosto    String?
+  jefDirectoId     String?
+  jefDirecto       Colaborador?   @relation("JefeDirecto", fields: [jefDirectoId], references: [id])
+  subordinados     Colaborador[]  @relation("JefeDirecto")
+  disponibilidad   String         @default("activo") // activo | baja | excedencia
+  fechaEgresoEsperado DateTime?
+  // Sistema
+  perfilId         String
+  perfil           Perfil         @relation(fields: [perfilId], references: [id])
+  estado           String         @default("activo") // activo | inactivo
+  fechaIngreso     DateTime       @default(now())
+  // Seguridad
+  intentosFallidos Int            @default(0)
+  bloqueadoHasta   DateTime?
+  ultimoAcceso     DateTime?
+  asignaciones     Asignacion[]
+  solicitudes      Solicitud[]
+  logs             LogAuditoria[]
+  proyectos        ColaboradorProyecto[]
+  createdAt        DateTime       @default(now())
+}
+
+// ----------------------- Proyectos (integración Movisuite) -----------------------
+
+model Proyecto {
+  id            String   @id @default(cuid())
+  nombre        String
+  descripcion   String?
+  codigoExterno String?  // código en Movisuite (se llena al sincronizar mañana)
+  activo        Boolean  @default(true)
+  colaboradores ColaboradorProyecto[]
+  createdAt     DateTime @default(now())
+}
+
+model ColaboradorProyecto {
+  colaboradorId String
+  proyectoId    String
+  colaborador   Colaborador @relation(fields: [colaboradorId], references: [id], onDelete: Cascade)
+  proyecto      Proyecto    @relation(fields: [proyectoId], references: [id], onDelete: Cascade)
+  asignadoEn   DateTime    @default(now())
+
+  @@id([colaboradorId, proyectoId])
+}
+
+// ----------------------- Catálogo e inventario -----------------------
+
+model Categoria {
+  id      String   @id @default(cuid())
+  nombre  String
+  icono   String?
+  tipo    String // tecnologia | oficina | cocina | baño | aseo | mobiliario | papeleria | otros
+  insumos Insumo[]
+}
+
+model Insumo {
+  id             String            @id @default(cuid())
+  nombre         String
+  descripcion    String?
+  categoriaId    String
+  categoria      Categoria         @relation(fields: [categoriaId], references: [id])
+  sku            String?
+  marca          String?
+  modelo         String?
+  unidad         String            @default("unidad")
+  stockActual    Int               @default(0)
+  stockMinimo    Int               @default(0)
+  esSerializable Boolean           @default(false)
+  ubicacion      String?
+  imagen         String?
+  proveedorId    String?
+  proveedor      Proveedor?        @relation(fields: [proveedorId], references: [id])
+  items          ItemSerializado[]
+  asignaciones   Asignacion[]
+  movimientos    Movimiento[]
+  solicitudItems SolicitudItem[]
+  createdAt      DateTime          @default(now())
+}
+
+model ItemSerializado {
+  id            String    @id @default(cuid())
+  insumoId      String
+  insumo        Insumo    @relation(fields: [insumoId], references: [id])
+  numeroSerie   String
+  estado        String    @default("disponible") // disponible | asignado | en_reparacion | dado_de_baja
+  fechaCompra   DateTime?
+  garantiaHasta DateTime?
+  valorCompra   Float?
+}
+
+model Proveedor {
+  id       String   @id @default(cuid())
+  nombre   String
+  rut      String?
+  contacto String?
+  email    String?
+  telefono String?
+  insumos  Insumo[]
+}
+
+// ----------------------- Asignaciones y solicitudes -----------------------
+
+model Asignacion {
+  id              String      @id @default(cuid())
+  colaboradorId   String
+  colaborador     Colaborador @relation(fields: [colaboradorId], references: [id])
+  insumoId        String
+  insumo          Insumo      @relation(fields: [insumoId], references: [id])
+  cantidad        Int         @default(1)
+  numeroSerie     String?
+  fechaAsignacion DateTime    @default(now())
+  fechaDevolucion DateTime?
+  estado          String      @default("vigente") // vigente | devuelto | extraviado
+  entregadoPor    String?
+  observaciones   String?
+  createdAt       DateTime    @default(now())
+}
+
+model Solicitud {
+  id              String          @id @default(cuid())
+  colaboradorId   String
+  colaborador     Colaborador     @relation(fields: [colaboradorId], references: [id])
+  fecha           DateTime        @default(now())
+  estado          String          @default("pendiente") // pendiente | aprobada | rechazada | entregada
+  comentarioAdmin String?
+  resueltaPor     String?
+  fechaResolucion DateTime?
+  items           SolicitudItem[]
+}
+
+model SolicitudItem {
+  id            String    @id @default(cuid())
+  solicitudId   String
+  solicitud     Solicitud @relation(fields: [solicitudId], references: [id], onDelete: Cascade)
+  insumoId      String
+  insumo        Insumo    @relation(fields: [insumoId], references: [id])
+  cantidad      Int       @default(1)
+  justificacion String?
+}
+
+model Movimiento {
+  id         String   @id @default(cuid())
+  insumoId   String
+  insumo     Insumo   @relation(fields: [insumoId], references: [id])
+  tipo       String // entrada | salida | ajuste | asignacion | devolucion
+  cantidad   Int
+  fecha      DateTime @default(now())
+  usuario    String?
+  referencia String?
+  motivo     String?
+}
+
+// ----------------------- Configuración -----------------------
+
+model Empresa {
+  id          String   @id @default(cuid())
+  nombre      String
+  razonSocial String?
+  rut         String?
+  giro        String?
+  email       String?
+  telefono    String?
+  sitioWeb    String?
+  pais        String   @default("Chile")
+  region      String?
+  ciudad      String?
+  direccion   String?
+  moneda      String   @default("CLP")
+  zonaHoraria String   @default("America/Santiago")
+  logo        String?
+  updatedAt   DateTime @updatedAt
+}
+
+model Ubicacion {
+  id              String   @id @default(cuid())
+  nombre          String
+  tipo            String   @default("oficina")
+  direccion       String?
+  numero          String?
+  piso            String?
+  referencia      String?
+  pais            String   @default("Chile")
+  region          String?
+  ciudad          String?
+  comuna          String?
+  telefono        String?
+  responsable     String?
+  esSedePrincipal Boolean  @default(false)
+  activa          Boolean  @default(true)
+  createdAt       DateTime @default(now())
+}
+
+model Departamento {
+  id          String   @id @default(cuid())
+  nombre      String
+  codigo      String?
+  descripcion String?
+  responsable String?
+  centroCosto String?
+  color       String   @default("#84CE25")
+  activo      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
+
+// ----------------------- Seguridad / auditoría -----------------------
+
+model LogAuditoria {
+  id            String       @id @default(cuid())
+  colaboradorId String?
+  colaborador   Colaborador? @relation(fields: [colaboradorId], references: [id])
+  accion        String // login | login_fallido | crear | editar | eliminar | aprobar ...
+  entidad       String?
+  detalle       String?
+  ip            String?
+  fecha         DateTime     @default(now())
+}

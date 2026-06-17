@@ -1,0 +1,292 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Yencinas Bodega — Glassmorphism + 3D Profundo
+   Paleta corporativa iencinas:
+   Azul  #0671ae (primario / estructura)
+   Verde #84CE25 (acento / neón / acción / éxito)
+   ============================================================ */
+
+:root {
+  --iencinas-blue: #0671ae;
+  --iencinas-blue-bright: #1e8fd0;
+  --iencinas-green: #84ce25;
+  --iencinas-green-bright: #9be83a;
+
+  --bg-base: #04121d;
+  --bg-deep: #020a12;
+  --bg-elevado: #0a2236;
+  --bg-sidebar: #041825;
+
+  --foreground: #e8f1f8;
+  --text-soft: #8fa9bd;
+
+  --glass-surface: rgba(255, 255, 255, 0.055);
+  --glass-surface-strong: rgba(255, 255, 255, 0.09);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-border-blue: rgba(6, 113, 174, 0.45);
+  --glass-border-green: rgba(132, 206, 37, 0.45);
+
+  --success: #84ce25;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --info: #0671ae;
+}
+
+@theme inline {
+  --color-background: var(--bg-base);
+  --color-foreground: var(--foreground);
+  --color-text-soft: var(--text-soft);
+
+  --color-brand-blue: var(--iencinas-blue);
+  --color-brand-blue-bright: var(--iencinas-blue-bright);
+  --color-brand-green: var(--iencinas-green);
+  --color-brand-green-bright: var(--iencinas-green-bright);
+
+  --color-bg-base: var(--bg-base);
+  --color-bg-elevado: var(--bg-elevado);
+  --color-bg-sidebar: var(--bg-sidebar);
+
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+  --color-warning: var(--warning);
+  --color-info: var(--info);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* ----------------------- Base ----------------------- */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  background-color: var(--bg-deep);
+  background-image:
+    radial-gradient(ellipse 140% 80% at 8% -10%, rgba(6, 113, 174, 0.34), transparent 55%),
+    radial-gradient(ellipse 90% 70% at 96% 4%, rgba(132, 206, 37, 0.07), transparent 45%),
+    radial-gradient(ellipse 55% 95% at 0% 100%, rgba(6, 113, 174, 0.15), transparent 50%),
+    linear-gradient(rgba(255, 255, 255, 0.016) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.016) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+  background-attachment: fixed;
+  min-height: 100vh;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+/* ----------------------- Utilidades glass + 3D ----------------------- */
+@layer utilities {
+
+  /* ===========================
+     MENÚS: Sidebar + Topbar
+     Vidrio oscuro profundo, muy definido
+     =========================== */
+  .glass-nav {
+    background: linear-gradient(
+      155deg,
+      rgba(4, 24, 38, 0.96) 0%,
+      rgba(2, 10, 18, 0.98) 100%
+    );
+    backdrop-filter: blur(32px) saturate(200%);
+    -webkit-backdrop-filter: blur(32px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow:
+      0 32px 80px rgba(0, 0, 0, 0.75),
+      0 0 0 1px rgba(6, 113, 174, 0.28),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.25),
+      inset 1px 0 0 rgba(255, 255, 255, 0.04);
+  }
+
+  /* ===========================
+     CONTENIDO: Cards y paneles (Glass definido 2D)
+     =========================== */
+  .glass {
+    background: linear-gradient(155deg, rgba(10, 34, 54, 0.92) 0%, rgba(4, 18, 29, 0.95) 100%);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.65),
+      0 0 0 1px rgba(6, 113, 174, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+  }
+
+  .glass-strong {
+    background: linear-gradient(155deg, rgba(10, 34, 54, 0.96) 0%, rgba(4, 18, 29, 0.98) 100%);
+    backdrop-filter: blur(32px) saturate(200%);
+    -webkit-backdrop-filter: blur(32px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow:
+      0 28px 80px rgba(0, 0, 0, 0.72),
+      0 0 0 1px rgba(6, 113, 174, 0.28),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.25);
+  }
+
+  /* ===========================
+     3D LIFT — Tarjetas con profundidad
+     =========================== */
+  .card-3d {
+    transition:
+      transform 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+      box-shadow 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+      border-color 0.3s ease;
+  }
+  .card-3d:hover {
+    transform: translateY(-4px) scale(1.004);
+    border-color: rgba(132, 206, 37, 0.28);
+    box-shadow:
+      0 28px 64px rgba(0, 0, 0, 0.58),
+      0 0 0 1px rgba(132, 206, 37, 0.2),
+      0 0 50px rgba(132, 206, 37, 0.07),
+      inset 0 1px 0 rgba(255, 255, 255, 0.13);
+  }
+
+  /* ===========================
+     GLOWS neón
+     =========================== */
+  .glow-green {
+    box-shadow: 0 0 22px rgba(132, 206, 37, 0.5), 0 0 6px rgba(132, 206, 37, 0.65);
+  }
+  .glow-blue {
+    box-shadow: 0 0 22px rgba(6, 113, 174, 0.55), 0 0 6px rgba(6, 113, 174, 0.7);
+  }
+  .text-glow-green {
+    text-shadow: 0 0 16px rgba(132, 206, 37, 0.65), 0 0 4px rgba(132, 206, 37, 0.4);
+  }
+
+  /* ===========================
+     BOTONES extruidos
+     =========================== */
+  .btn-green {
+    background: linear-gradient(180deg, var(--iencinas-green-bright), var(--iencinas-green));
+    color: #06210a;
+    font-weight: 600;
+    border: 1px solid rgba(132, 206, 37, 0.6);
+    box-shadow:
+      0 6px 0 #4f7d16,
+      0 12px 26px rgba(132, 206, 37, 0.3);
+    transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+  }
+  .btn-green:hover {
+    filter: brightness(1.07);
+    box-shadow: 0 6px 0 #4f7d16, 0 16px 32px rgba(132, 206, 37, 0.42);
+  }
+  .btn-green:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 #4f7d16, 0 4px 14px rgba(132, 206, 37, 0.3);
+  }
+
+  .btn-blue {
+    background: linear-gradient(180deg, var(--iencinas-blue-bright), var(--iencinas-blue));
+    color: #eaf6ff;
+    font-weight: 600;
+    border: 1px solid rgba(30, 143, 208, 0.6);
+    box-shadow: 0 6px 0 #044b73, 0 10px 22px rgba(6, 113, 174, 0.28);
+    transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+  }
+  .btn-blue:hover {
+    filter: brightness(1.07);
+  }
+  .btn-blue:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 #044b73, 0 4px 12px rgba(6, 113, 174, 0.3);
+  }
+
+  /* ===========================
+     ACTIVO - subrayado neón
+     =========================== */
+  .active-underline {
+    position: relative;
+  }
+  .active-underline::after {
+    content: "";
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: -2px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--iencinas-green);
+    box-shadow: 0 0 12px rgba(132, 206, 37, 0.75);
+  }
+
+  /* ===========================
+     BOTÓN SECUNDARIO (cancelar, volver, neutral)
+     =========================== */
+  .btn-ghost {
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-soft);
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  .btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.09);
+    border-color: rgba(255, 255, 255, 0.24);
+    color: var(--foreground);
+  }
+
+  /* ===========================
+     BOTÓN PELIGRO (eliminar, rechazar)
+     =========================== */
+  .btn-danger {
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    background: rgba(239, 68, 68, 0.06);
+    color: rgb(252, 165, 165);
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  .btn-danger:hover {
+    background: rgba(239, 68, 68, 0.14);
+    border-color: rgba(239, 68, 68, 0.52);
+    color: rgb(254, 202, 202);
+  }
+  .btn-danger:disabled {
+    opacity: 0.5;
+  }
+
+  /* ===========================
+     INPUT GLASS — campo de formulario
+     =========================== */
+  .input-glass {
+    width: 100%;
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    color: var(--foreground);
+    outline: none;
+    transition: all 0.2s ease;
+  }
+  .input-glass::placeholder {
+    color: rgba(143, 169, 189, 0.4);
+  }
+  .input-glass:focus {
+    border-color: var(--iencinas-green);
+    background: rgba(255, 255, 255, 0.07);
+    box-shadow: 0 0 0 2px rgba(132, 206, 37, 0.18);
+  }
+
+  /* ===========================
+     SECCIÓN DE FORMULARIO — panel interno
+     =========================== */
+  .form-section {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    padding: 1.25rem;
+  }
+
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+  }
+}
