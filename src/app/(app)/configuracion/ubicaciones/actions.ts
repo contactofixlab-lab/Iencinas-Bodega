@@ -16,7 +16,7 @@ export async function crearUbicacion(data: UbicacionData) {
     if (data.esSedePrincipal) {
       await prisma.ubicacion.updateMany({ where: { esSedePrincipal: true }, data: { esSedePrincipal: false } });
     }
-    await prisma.ubicacion.create({ data: { nombre: data.nombre, tipo: data.tipo, ...data } });
+    await prisma.ubicacion.create({ data });
     revalidatePath("/configuracion/ubicaciones");
     return { success: true };
   } catch {
