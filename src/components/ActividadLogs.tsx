@@ -84,7 +84,7 @@ const getEtiquetaAccion = (accion: string): string => {
   return ACCIONES_DISPONIBLES.find(a => a.value === accion)?.label || accion;
 };
 
-const getEtiquetaEntidad = (entidad: string): string => {
+const getEtiquetaEntidad = (entidad: string | null): string => {
   return ENTIDADES_DISPONIBLES.find(e => e.value === entidad)?.label || entidad || "—";
 };
 
