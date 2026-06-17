@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
       contentType = "text/csv";
     }
 
-    return new NextResponse(buffer, {
+    return new Response(buffer, {
       headers: {
         "Content-Type": contentType,
         "Content-Disposition": `attachment; filename="${filename}"`,
