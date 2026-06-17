@@ -113,7 +113,7 @@ export default async function DashboardPage() {
                   <StatCard label="Inventario Total" value={totalItems._sum.stockActual ?? 0} accent="green" icon={<Package className="h-5 w-5" />} hint="unidades en stock" />
                   <StatCard label="Tipos de Insumo" value={insumos} accent="blue" icon={<Boxes className="h-5 w-5" />} hint="en catálogo" />
                   <StatCard label="Stock Bajo" value={bajoCount} accent="warning" icon={<AlertTriangle className="h-5 w-5" />} hint="bajo el mínimo" />
-                  <StatCard label="Tasa Utilización" value={`${tasaUtilizacion}%`} accent="success" icon={<TrendingUp className="h-5 w-5" />} />
+                  <StatCard label="Tasa Utilización" value={`${tasaUtilizacion}%`} accent="green" icon={<TrendingUp className="h-5 w-5" />} />
                 </div>
                 <GraficosResumen datos={{ inventarioPorCategoria, distribucionEstado, movimientosUltimos30, asignacionesPorArea }} />
               </div>
