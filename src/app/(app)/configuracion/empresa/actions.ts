@@ -24,7 +24,7 @@ export async function guardarEmpresa(data: {
     if (existing) {
       await prisma.empresa.update({ where: { id: existing.id }, data });
     } else {
-      await prisma.empresa.create({ data: { nombre: data.nombre, ...data } });
+      await prisma.empresa.create({ data });
     }
     revalidatePath("/configuracion/empresa");
     return { success: true };
