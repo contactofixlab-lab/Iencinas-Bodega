@@ -10,7 +10,7 @@ type DepartamentoData = {
 
 export async function crearDepartamento(data: DepartamentoData) {
   try {
-    await prisma.departamento.create({ data: { nombre: data.nombre, ...data } });
+    await prisma.departamento.create({ data });
     revalidatePath("/configuracion/departamentos");
     return { success: true };
   } catch {
