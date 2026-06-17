@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     : formato === "excel" ? "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     : "text/csv";
 
-  return new Response(buffer, {
+  return new Response(new Uint8Array(buffer), {
     headers: {
       "Content-Type": contentType,
       "Content-Disposition": `attachment; filename="${encodeURIComponent(filename)}"`,
