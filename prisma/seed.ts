@@ -37,7 +37,7 @@ async function main() {
   const hash = await bcrypt.hash("Iencinas2026", 10);
   const admin_user = await prisma.colaborador.create({
     data: {
-      nombre: "Vicente", apellidoPaterno: "Rabanales", apellidoMaterno: "González", correo: "admin@iencinas.cl",
+      nombre: "Vicente", apellidoPaterno: "Rabanables", apellidoMaterno: "Valenzuela", correo: "vrabanales@rcapcorp.cl",
       passwordHash: hash,
       // Datos personales
       telefonoPersonal: "+56 9 8765 4321",
@@ -49,29 +49,32 @@ async function main() {
       numeroEmergencia: "+56 9 2222 1111",
       fotoPerfil: null,
       // Datos empresa
-      area: "Administración", cargo: "Administrador",
+      area: "Administración", cargo: "Ingeniero Informático",
       telefonoCorporativo: "+56 2 2345 6789 ext. 101",
       centrodeCosto: "ADMIN",
       disponibilidad: "activo",
       perfilId: admin.id,
     },
   });
-  const bodega_user = await prisma.colaborador.create({
+  const jose_magento = await prisma.colaborador.create({
     data: {
-      nombre: "Bárbara", apellidoPaterno: "Soto", apellidoMaterno: "Morales", correo: "bodega@iencinas.cl",
+      nombre: "José", apellidoPaterno: "Magento", apellidoMaterno: "García", correo: "jmagento@iencinas.cl",
       passwordHash: hash,
-      telefonoPersonal: "+56 9 9876 5432",
-      rutPersonal: "23.456.789-0",
-      direccion: "Los Militares 5678, Casa 12",
+      // Datos personales
+      telefonoPersonal: "+56 9 9999 8888",
+      rutPersonal: "18.999.999-K",
+      direccion: "Av. Apoquindo 3000, Depto 1201",
       ciudad: "Las Condes",
       region: "Región Metropolitana",
-      fechaNacimiento: new Date("1990-07-22"),
-      numeroEmergencia: "+56 9 3333 2222",
-      area: "Operaciones", cargo: "Encargada de bodega",
-      telefonoCorporativo: "+56 2 2345 6789 ext. 102",
-      centrodeCosto: "OPS",
+      fechaNacimiento: new Date("1987-06-20"),
+      numeroEmergencia: "+56 9 1234 5678",
+      fotoPerfil: null,
+      // Datos empresa
+      area: "Administración", cargo: "Administrador de Sistemas",
+      telefonoCorporativo: "+56 2 2345 6789 ext. 105",
+      centrodeCosto: "ADMIN",
       disponibilidad: "activo",
-      perfilId: bodeguero.id,
+      perfilId: admin.id,
     },
   });
   const colab = await prisma.colaborador.create({
@@ -219,9 +222,9 @@ async function main() {
   });
 
   console.log("✅ Seed completado.");
-  console.log("   Admin:       admin@iencinas.cl / Iencinas2026");
-  console.log("   Bodeguero:   bodega@iencinas.cl / Iencinas2026");
-  console.log("   Colaborador: colaborador@iencinas.cl / Iencinas2026");
+  console.log("   Vicente Rabanables (Admin): vrabanales@rcapcorp.cl / Iencinas2026");
+  console.log("   José Magento (Admin):       jmagento@iencinas.cl / Iencinas2026");
+  console.log("   Diego Fuentes (Colaborador): colaborador@iencinas.cl / Iencinas2026");
 }
 
 main()

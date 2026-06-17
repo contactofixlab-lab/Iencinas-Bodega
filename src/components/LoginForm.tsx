@@ -98,9 +98,10 @@ export default function LoginForm() {
       <div className="mt-6 flex items-start gap-2 rounded-lg border border-white/10 bg-white/5 p-3 text-xs text-text-soft">
         <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-brand-green" />
         <div>
-          <p className="font-medium text-foreground/90">Credenciales de prueba (v1)</p>
-          <p>admin@iencinas.cl · colaborador@iencinas.cl</p>
-          <p>Contraseña: Iencinas2026</p>
+          <p className="font-medium text-foreground/90">Cuentas de acceso</p>
+          <p><span className="text-foreground">Vicente Rabanables</span> (Admin): vrabanales@rcapcorp.cl</p>
+          <p><span className="text-foreground">José Magento</span> (Admin): jmagento@iencinas.cl</p>
+          <p>Contraseña para todas: <span className="text-foreground">Iencinas2026</span></p>
         </div>
       </div>
     </div>
