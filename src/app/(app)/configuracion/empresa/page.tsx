@@ -1,4 +1,4 @@
-import { Building2 } from "lucide-react";
+import { Building2 } from "@/components/icons";
 import { prisma } from "@/lib/prisma";
 import { requireModulo } from "@/lib/guard";
 import { PageHeader } from "@/components/ui";

@@ -1,4 +1,4 @@
-import { Package } from "lucide-react";
+import { Package } from "@/components/icons";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Users, Plus, Edit, Eye } from "lucide-react";
+import { Users, Plus, Edit, Eye } from "@/components/icons";
 import { getSession } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";

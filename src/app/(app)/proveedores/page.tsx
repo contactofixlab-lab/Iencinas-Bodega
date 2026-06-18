@@ -1,4 +1,4 @@
-import { Truck } from "lucide-react";
+import { Truck } from "@/components/icons";
 import { prisma } from "@/lib/prisma";
 import { requireModulo } from "@/lib/guard";
 import { PageHeader } from "@/components/ui";

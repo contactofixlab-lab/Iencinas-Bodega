@@ -1,6 +1,6 @@
 import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
-import { BarChart3 } from "lucide-react";
+import { BarChart3 } from "@/components/icons";
 import GestorReportes from "@/components/GestorReportes";
 
 export const metadata = {

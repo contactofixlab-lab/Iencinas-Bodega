@@ -1,4 +1,4 @@
-import { Boxes } from "lucide-react";
+import { Boxes } from "@/components/icons";
 import { prisma } from "@/lib/prisma";
 import { requireModulo } from "@/lib/guard";
 import { PageHeader, Table, Badge, EmptyRow } from "@/components/ui";

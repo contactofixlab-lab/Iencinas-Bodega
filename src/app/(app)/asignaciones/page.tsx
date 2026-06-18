@@ -1,4 +1,4 @@
-import { ArrowLeftRight } from "lucide-react";
+import { ArrowLeftRight } from "@/components/icons";
 import { prisma } from "@/lib/prisma";
 import { requireModulo } from "@/lib/guard";
 import { PageHeader } from "@/components/ui";

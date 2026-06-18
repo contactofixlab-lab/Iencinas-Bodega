@@ -1,4 +1,4 @@
-import { FolderKanban } from "lucide-react";
+import { FolderKanban } from "@/components/icons";
 import { prisma } from "@/lib/prisma";
 import { requireModulo } from "@/lib/guard";
 import { PageHeader } from "@/components/ui";

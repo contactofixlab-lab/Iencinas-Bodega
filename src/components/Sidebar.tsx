@@ -14,10 +14,9 @@ import {
   Building2,
   MapPin,
   FolderKanban,
-  FolderOpen,
   Settings2,
   type LucideIcon,
-} from "lucide-react";
+} from "@/components/icons";
 import type { Modulo } from "@/lib/permisos";
 
 type Item = { label: string; href: string; icon: LucideIcon; modulo: Modulo };
@@ -34,7 +33,6 @@ const CONFIGURACION: Item[] = [
   { label: "Empresa",       href: "/configuracion/empresa",       icon: Building2,    modulo: "configuracion" },
   { label: "Ubicaciones",   href: "/configuracion/ubicaciones",   icon: MapPin,       modulo: "configuracion" },
   { label: "Departamentos", href: "/configuracion/departamentos", icon: FolderKanban, modulo: "configuracion" },
-  { label: "Proyectos",     href: "/configuracion/proyectos",     icon: FolderOpen,   modulo: "configuracion" },
 ];
 
 const MI_ESPACIO: Item[] = [
