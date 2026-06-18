@@ -1,31 +1,54 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { PageHeader, StatCard } from "@/components/ui";
 import Tabs from "@/components/Tabs";
 import GraficosResumen from "@/components/GraficosResumen";
 import GestorReportes from "@/components/GestorReportes";
 import AlertaStockBajo from "@/components/AlertaStockBajo";
 import ActividadLogs from "@/components/ActividadLogs";
+import { getDashboardData } from "./actions";
 
 export default function DashboardPage() {
-  // Client-side data placeholder for now
-  const insumos = 0;
-  const bajoCount = 0;
-  const totalItems = { _sum: { stockActual: 0 } };
-  const insumosData: any[] = [];
-  const asignacionesData: any[] = [];
-  const movimientosData: any[] = [];
-  const logsActividad: any[] = [];
-  const insumosAlerta: any[] = [];
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState<any>(null);
 
-  const tasaUtilizacion = 0;
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const dashData = await getDashboardData();
+        setData(dashData);
+      } catch (error) {
+        console.error("Error loading dashboard data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
-  // Procesar datos para gráficos
-  const inventarioPorCategoria: any[] = [];
-  const distribucionEstado: any[] = [];
-  const movimientosUltimos30: any[] = [];
-  const asignacionesPorArea: any[] = [];
-  const logsSer: any[] = [];
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-green mx-auto mb-4"></div>
+          <p className="text-text-soft">Cargando dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <p className="text-red-400">Error al cargar los datos</p>
+        </div>
+      </div>
+    );
+  }
+
+  const { insumos, bajoCount, totalItems, insumosAlerta, tasaUtilizacion, inventarioPorCategoria, distribucionEstado, movimientosUltimos30, asignacionesPorArea, logsSer } = data;
 
   return (
     <div>
