@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { FileText, Download, Loader2, Users, Box, CheckSquare, BarChart3, TrendingUp } from "@/components/icons";
+import { FileText, Download, Loader2, Users, Boxes, CheckSquare, BarChart3, TrendingUp } from "@/components/icons";
 
 const reportes = [
   { id: "colaboradores", label: "Colaboradores", icon: Users, color: "text-brand-blue" },
