@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Filter, X, Activity } from "lucide-react";
+import { Filter, X, Activity } from "@/components/icons";
 import { Table, EmptyRow, Badge } from "@/components/ui";
 import AppSelect from "@/components/AppSelect";
 

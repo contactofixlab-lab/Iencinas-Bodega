@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2 } from "@/components/icons";
 import { Badge, Table, EmptyRow } from "@/components/ui";
 import Modal from "@/components/Modal";
 import { crearDepartamento, editarDepartamento, eliminarDepartamento } from "./actions";

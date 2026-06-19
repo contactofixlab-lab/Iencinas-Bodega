@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, usePathname } from "next/navigation";
-import { LogOut } from "lucide-react";
+import { LogOut } from "@/components/icons";
 
 const PAGE_NAMES: Record<string, string> = {
   "/dashboard":                    "Dashboard",

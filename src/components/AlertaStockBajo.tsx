@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AlertTriangle, X, ChevronDown, ChevronUp } from "lucide-react";
+import { AlertTriangle, X, ChevronDown, ChevronUp } from "@/components/icons";
 
 type InsumoAlerta = { id: string; nombre: string; stockActual: number; stockMinimo: number; unidad: string; categoria: { nombre: string } };
 

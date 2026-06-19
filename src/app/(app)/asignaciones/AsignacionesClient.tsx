@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Check, X } from "lucide-react";
+import { Plus, Check, X } from "@/components/icons";
 import { Badge, Table, EmptyRow } from "@/components/ui";
 import AppSelect from "@/components/AppSelect";
 import Modal from "@/components/Modal";

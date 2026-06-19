@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { Eye, Download, Loader2, Table2, X, Check, FileText, Link2, ChevronDown, ChevronUp } from "lucide-react";
+import { Eye, Download, Loader2, Table2, X, Check, FileText, Link2, ChevronDown, ChevronUp } from "@/components/icons";
 import { previsualizarConEntidades } from "@/app/api/reportes/actions";
 import {
   ENTIDADES_INFO, ESTRATEGIA_GRUPOS, ESTRATEGIA_CUBRE,

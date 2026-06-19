@@ -1,6 +1,6 @@
 "use client";
 
-import { LogIn, Plus, Pencil, Check, X, Package, ArrowLeftRight, Trash2, AlertTriangle } from "lucide-react";
+import { LogIn, Plus, Pencil, Check, X, Package, ArrowLeftRight, Trash2, AlertTriangle } from "@/components/icons";
 
 type LogEntry = {
   id: string;

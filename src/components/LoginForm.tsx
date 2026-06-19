@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { motion } from "motion/react";
-import { LogIn, Loader2, ShieldCheck } from "lucide-react";
+import { LogIn, Loader2, ShieldCheck } from "@/components/icons";
 
 export default function LoginForm() {
   const router = useRouter();

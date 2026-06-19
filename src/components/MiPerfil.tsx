@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, Phone, MapPin, Calendar, Building, Briefcase, User, Shield } from "lucide-react";
+import { Mail, Phone, MapPin, Calendar, Building, Briefcase, User, Shield } from "@/components/icons";
 import type { Colaborador, Perfil } from "@prisma/client";
 import Modal from "@/components/Modal";
 import { actualizarPerfilPersonal } from "@/app/api/perfil/actions";

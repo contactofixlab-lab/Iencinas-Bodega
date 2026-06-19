@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Pencil, ArrowUp, ArrowDown, RotateCcw, QrCode } from "lucide-react";
+import { Plus, Pencil, ArrowUp, ArrowDown, RotateCcw, QrCode } from "@/components/icons";
 import { Table, Badge, EmptyRow } from "@/components/ui";
 import AppSelect from "@/components/AppSelect";
 import Modal from "@/components/Modal";

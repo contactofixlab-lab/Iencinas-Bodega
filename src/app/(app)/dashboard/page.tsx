@@ -88,8 +88,6 @@ export default async function DashboardPage() {
     fecha: l.fecha.toISOString(),
   }));
 
-  const { insumos, bajoCount, totalItems, insumosAlerta, tasaUtilizacion, inventarioPorCategoria, distribucionEstado, movimientosUltimos30, asignacionesPorArea, logsSer } = data;
-
   return (
     <div>
       <PageHeader

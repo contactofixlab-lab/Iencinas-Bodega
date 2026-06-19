@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2 } from "@/components/icons";
 import { Badge } from "@/components/ui";
 import Modal from "@/components/Modal";
 import { crearSolicitud } from "@/app/api/asignaciones/actions";

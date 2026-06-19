@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Save, Building2, Globe, Phone, Mail, MapPin, DollarSign } from "lucide-react";
+import { Save, Building2, Globe, Phone, Mail, MapPin, DollarSign } from "@/components/icons";
 import AppSelect from "@/components/AppSelect";
 import { guardarEmpresa } from "./actions";
 

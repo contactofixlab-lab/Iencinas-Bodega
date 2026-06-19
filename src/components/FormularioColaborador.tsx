@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { User, Mail, Lock, Phone, FileText, MapPin, Briefcase, Building, Calendar, AlertCircle, FolderOpen, Check } from "lucide-react";
+import { User, Mail, Lock, Phone, FileText, MapPin, Briefcase, Building, Calendar, AlertCircle, FolderOpen, Check } from "@/components/icons";
 import type { Colaborador, Perfil, Proyecto } from "@prisma/client";
 import AppSelect from "@/components/AppSelect";
 

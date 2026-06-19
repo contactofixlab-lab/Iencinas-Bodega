@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Modal from "@/components/Modal";
-import { Download } from "lucide-react";
+import { Download } from "@/components/icons";
 
 export default function QRModal({
   id, nombre, tipo, onClose,
