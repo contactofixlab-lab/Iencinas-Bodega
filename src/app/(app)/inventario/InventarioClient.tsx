@@ -6,7 +6,7 @@ import { Plus, Pencil, ArrowUp, ArrowDown, RotateCcw, QrCode } from "@/component
 import { Table, Badge, EmptyRow } from "@/components/ui";
 import AppSelect from "@/components/AppSelect";
 import Modal from "@/components/Modal";
-import { crearCategoria, crearInsumo, editarInsumo, registrarMovimiento } from "@/app/api/inventario/actions";
+import { crearCategoria, editarInsumo, registrarMovimiento } from "@/app/api/inventario/actions";
 import QRModal from "@/components/QRModal";
 
 type Categoria = { id: string; nombre: string; tipo: string; _count: { insumos: number } };
@@ -44,7 +44,6 @@ export default function InventarioClient({
 
   // Modales
   const [modalCat, setModalCat] = useState(false);
-  const [modalInsumo, setModalInsumo] = useState(false);
   const [modalEditar, setModalEditar] = useState<Insumo | null>(null);
   const [modalMov, setModalMov] = useState<Insumo | null>(null);
   const [modalQR, setModalQR] = useState<{ id: string; nombre: string } | null>(null);
@@ -52,12 +51,6 @@ export default function InventarioClient({
 
   // Form categoria
   const [fCat, setFCat] = useState({ nombre: "", tipo: "oficina" });
-  // Form insumo
-  const [fIns, setFIns] = useState({
-    nombre: "", descripcion: "", categoriaId: categorias[0]?.id ?? "",
-    sku: "", marca: "", modelo: "", unidad: "unidad",
-    stockActual: 0, stockMinimo: 0, ubicacion: "", proveedorId: "", esSerializable: false,
-  });
   // Form editar insumo
   const [fEdit, setFEdit] = useState<any>({});
   // Form movimiento
@@ -70,13 +63,6 @@ export default function InventarioClient({
     const r = await crearCategoria({ nombre: fCat.nombre, tipo: fCat.tipo });
     if (!r.success) { setError(r.error ?? "Error"); return; }
     setModalCat(false); setFCat({ nombre: "", tipo: "oficina" }); refresh();
-  };
-
-  const handleCrearInsumo = async () => {
-    setError("");
-    const r = await crearInsumo({ ...fIns, proveedorId: fIns.proveedorId || undefined });
-    if (!r.success) { setError(r.error ?? "Error"); return; }
-    setModalInsumo(false); refresh();
   };
 
   const handleEditarInsumo = async () => {
@@ -136,7 +122,7 @@ export default function InventarioClient({
       {activeTab === "insumos" && <div>
         {puedeCrear && (
           <div className="mb-4 flex justify-end">
-            <button onClick={() => { setModalInsumo(true); setError(""); }} className="btn-green flex items-center gap-2 rounded-lg px-3 py-2 text-sm">
+            <button onClick={() => router.push("/inventario/nuevo")} className="btn-green flex items-center gap-2 rounded-lg px-3 py-2 text-sm">
               <Plus className="h-4 w-4" /> Agregar insumo
             </button>
           </div>
@@ -197,52 +183,6 @@ export default function InventarioClient({
           <div className="flex gap-3 pt-2">
             <button onClick={() => setModalCat(false)} className="btn-ghost flex-1 rounded-lg py-2 text-sm">Cancelar</button>
             <button onClick={handleCrearCat} disabled={!fCat.nombre} className="flex-1 btn-green rounded-lg py-2 text-sm disabled:opacity-50">Crear categoría</button>
-          </div>
-        </div>
-      </Modal>
-
-      {/* Modal crear insumo */}
-      <Modal title="Agregar insumo" open={modalInsumo} onClose={() => setModalInsumo(false)} size="lg">
-        <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <Field label="Nombre *"><Input value={fIns.nombre} onChange={e => setFIns(p => ({ ...p, nombre: e.target.value }))} placeholder="Ej: Resma A4 500 hojas" /></Field>
-            <Field label="Categoría *">
-              <AppSelect
-                value={fIns.categoriaId}
-                onChange={(v) => setFIns(p => ({ ...p, categoriaId: v }))}
-                options={categorias.map(c => ({ value: c.id, label: c.nombre }))}
-              />
-            </Field>
-            <Field label="SKU / Código"><Input value={fIns.sku} onChange={e => setFIns(p => ({ ...p, sku: e.target.value }))} placeholder="SKU-001" /></Field>
-            <Field label="Marca"><Input value={fIns.marca} onChange={e => setFIns(p => ({ ...p, marca: e.target.value }))} placeholder="Xerox" /></Field>
-            <Field label="Modelo"><Input value={fIns.modelo} onChange={e => setFIns(p => ({ ...p, modelo: e.target.value }))} placeholder="Navigator" /></Field>
-            <Field label="Unidad">
-              <AppSelect
-                value={fIns.unidad}
-                onChange={(v) => setFIns(p => ({ ...p, unidad: v }))}
-                options={["unidad","caja","paquete","resma","litro","kg","par","set"].map(u => ({ value: u, label: u }))}
-              />
-            </Field>
-            <Field label="Stock inicial"><Input type="number" min={0} value={fIns.stockActual} onChange={e => setFIns(p => ({ ...p, stockActual: +e.target.value }))} /></Field>
-            <Field label="Stock mínimo"><Input type="number" min={0} value={fIns.stockMinimo} onChange={e => setFIns(p => ({ ...p, stockMinimo: +e.target.value }))} /></Field>
-            <Field label="Ubicación en bodega"><Input value={fIns.ubicacion} onChange={e => setFIns(p => ({ ...p, ubicacion: e.target.value }))} placeholder="Ej: Estante A-3" /></Field>
-            <Field label="Proveedor">
-              <AppSelect
-                value={fIns.proveedorId}
-                onChange={(v) => setFIns(p => ({ ...p, proveedorId: v }))}
-                options={[{ value: "", label: "Sin proveedor" }, ...proveedores.map(p => ({ value: p.id, label: p.nombre }))]}
-              />
-            </Field>
-          </div>
-          <Field label="Descripción"><Input value={fIns.descripcion} onChange={e => setFIns(p => ({ ...p, descripcion: e.target.value }))} placeholder="Descripción opcional" /></Field>
-          <label className="flex items-center gap-2 text-sm cursor-pointer">
-            <input type="checkbox" checked={fIns.esSerializable} onChange={e => setFIns(p => ({ ...p, esSerializable: e.target.checked }))} className="rounded" />
-            Ítem serializable (tiene número de serie)
-          </label>
-          {error && <p className="text-sm text-red-400">{error}</p>}
-          <div className="flex gap-3 pt-2">
-            <button onClick={() => setModalInsumo(false)} className="btn-ghost flex-1 rounded-lg py-2 text-sm">Cancelar</button>
-            <button onClick={handleCrearInsumo} disabled={!fIns.nombre || !fIns.categoriaId} className="flex-1 btn-green rounded-lg py-2 text-sm disabled:opacity-50">Agregar insumo</button>
           </div>
         </div>
       </Modal>
