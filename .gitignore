@@ -48,3 +48,4 @@ prisma/dev.db-journal
 !.env.example
 
 .vercel
+.env*

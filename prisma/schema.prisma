@@ -1,14 +1,14 @@
 // Yencinas Bodega — Esquema de datos
-// v1 local: SQLite. Para producción cambiar provider a "postgresql".
-// SQLite (vía Prisma) no soporta enums ni Json: los estados van como String
-// y los permisos del perfil como String con JSON serializado.
+// Producción: PostgreSQL (Neon, vía integración Vercel).
+// Los estados van como String y los permisos del perfil como String con
+// JSON serializado por compatibilidad con el esquema original de SQLite.
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
