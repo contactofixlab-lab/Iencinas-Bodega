@@ -5,7 +5,7 @@ import { FileText, Download, Loader2, Users, Boxes, CheckSquare, BarChart3, Tren
 
 const reportes = [
   { id: "colaboradores", label: "Colaboradores", icon: Users, color: "text-brand-blue" },
-  { id: "inventario", label: "Inventario", icon: Box, color: "text-brand-green" },
+  { id: "inventario", label: "Inventario", icon: Boxes, color: "text-brand-green" },
   { id: "asignaciones", label: "Asignaciones", icon: CheckSquare, color: "text-emerald-400" },
   { id: "solicitudes", label: "Solicitudes", icon: BarChart3, color: "text-amber-400" },
   { id: "movimientos", label: "Movimientos", icon: TrendingUp, color: "text-purple-400" },
