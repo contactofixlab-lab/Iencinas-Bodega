@@ -27,6 +27,9 @@ export async function crearInsumo(data: {
   nombre: string; descripcion?: string; categoriaId: string; sku?: string;
   marca?: string; modelo?: string; unidad: string; stockActual: number;
   stockMinimo: number; ubicacion?: string; proveedorId?: string; esSerializable: boolean;
+  empresa?: string; tipoInsumo?: string; ram?: number; almacenamiento?: number;
+  numeroSerie?: string; sistemaOperativo?: string; estadoEquipo?: string;
+  precioReferencia?: number; precioVendible?: number; precioVendido?: number; formateado?: boolean;
 }) {
   const session = await getSessionOrRedirect();
   try {
@@ -44,6 +47,17 @@ export async function crearInsumo(data: {
         ubicacion: data.ubicacion || null,
         proveedorId: data.proveedorId || null,
         esSerializable: data.esSerializable,
+        empresa: data.empresa || null,
+        tipoInsumo: data.tipoInsumo || null,
+        ram: data.ram ?? null,
+        almacenamiento: data.almacenamiento ?? null,
+        numeroSerie: data.numeroSerie || null,
+        sistemaOperativo: data.sistemaOperativo || null,
+        estadoEquipo: data.estadoEquipo || null,
+        precioReferencia: data.precioReferencia ?? null,
+        precioVendible: data.precioVendible ?? null,
+        precioVendido: data.precioVendido ?? null,
+        formateado: data.formateado ?? false,
       },
     });
     if (data.stockActual > 0) {
@@ -68,6 +82,9 @@ export async function editarInsumo(id: string, data: {
   nombre?: string; descripcion?: string; sku?: string; marca?: string;
   modelo?: string; unidad?: string; stockMinimo?: number; ubicacion?: string;
   proveedorId?: string; categoriaId?: string;
+  empresa?: string; tipoInsumo?: string; ram?: number; almacenamiento?: number;
+  numeroSerie?: string; sistemaOperativo?: string; estadoEquipo?: string;
+  precioReferencia?: number; precioVendible?: number; precioVendido?: number; formateado?: boolean;
 }) {
   const session = await getSessionOrRedirect();
   try {
@@ -84,6 +101,17 @@ export async function editarInsumo(id: string, data: {
         ubicacion: data.ubicacion || null,
         proveedorId: data.proveedorId || null,
         categoriaId: data.categoriaId,
+        empresa: data.empresa || null,
+        tipoInsumo: data.tipoInsumo || null,
+        ram: data.ram ?? null,
+        almacenamiento: data.almacenamiento ?? null,
+        numeroSerie: data.numeroSerie || null,
+        sistemaOperativo: data.sistemaOperativo || null,
+        estadoEquipo: data.estadoEquipo || null,
+        precioReferencia: data.precioReferencia ?? null,
+        precioVendible: data.precioVendible ?? null,
+        precioVendido: data.precioVendido ?? null,
+        formateado: data.formateado ?? false,
       },
     });
     await prisma.logAuditoria.create({

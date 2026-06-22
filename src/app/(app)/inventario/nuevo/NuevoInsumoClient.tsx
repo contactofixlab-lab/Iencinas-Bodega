@@ -5,11 +5,19 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowLeft, Check } from "@/components/icons";
 import AppSelect from "@/components/AppSelect";
+import TipoInsumoSelect from "@/components/TipoInsumoSelect";
 import { crearInsumo } from "@/app/api/inventario/actions";
 import { TIPO_CONFIG, DEFAULT_TIPO_CONFIG as DEFAULT_CONFIG } from "@/lib/categoriaTipos";
 
 type Categoria = { id: string; nombre: string; tipo: string; icono: string | null; _count: { insumos: number } };
 type Proveedor = { id: string; nombre: string };
+
+const ESTADO_EQUIPO_OPTIONS = [
+  { value: "nuevo", label: "Nuevo" },
+  { value: "usado", label: "Usado" },
+  { value: "dañado", label: "Dañado" },
+  { value: "en_reparacion", label: "En reparación" },
+];
 
 const Field = ({ label, children }: { label: string; children: React.ReactNode }) => (
   <div className="space-y-1">
@@ -23,9 +31,9 @@ const Input = (props: React.InputHTMLAttributes<HTMLInputElement>) => (
 );
 
 export default function NuevoInsumoClient({
-  categorias, proveedores,
+  categorias, proveedores, tiposInsumoSugeridos = [],
 }: {
-  categorias: Categoria[]; proveedores: Proveedor[];
+  categorias: Categoria[]; proveedores: Proveedor[]; tiposInsumoSugeridos?: string[];
 }) {
   const router = useRouter();
   const [step, setStep] = useState<1 | 2>(1);
@@ -34,11 +42,15 @@ export default function NuevoInsumoClient({
   const [error, setError] = useState("");
 
   const config = categoria ? (TIPO_CONFIG[categoria.tipo] ?? DEFAULT_CONFIG) : DEFAULT_CONFIG;
+  const esTecnologia = categoria?.tipo === "tecnologia";
 
   const [form, setForm] = useState({
     nombre: "", descripcion: "", sku: "", marca: "", modelo: "",
     unidad: "unidad", stockActual: 0, stockMinimo: 0, ubicacion: "",
     proveedorId: "", esSerializable: false,
+    empresa: "", tipoInsumo: "", ram: "", almacenamiento: "",
+    numeroSerie: "", sistemaOperativo: "", estadoEquipo: "",
+    precioReferencia: "", precioVendible: "", precioVendido: "", formateado: false,
   });
 
   const elegirCategoria = (c: Categoria) => {
@@ -59,6 +71,11 @@ export default function NuevoInsumoClient({
       ...form,
       categoriaId: categoria.id,
       proveedorId: form.proveedorId || undefined,
+      ram: form.ram ? +form.ram : undefined,
+      almacenamiento: form.almacenamiento ? +form.almacenamiento : undefined,
+      precioReferencia: form.precioReferencia ? +form.precioReferencia : undefined,
+      precioVendible: form.precioVendible ? +form.precioVendible : undefined,
+      precioVendido: form.precioVendido ? +form.precioVendido : undefined,
     });
     setSubmitting(false);
     if (!r.success) { setError(r.error ?? "Error al crear el insumo"); return; }
@@ -194,6 +211,57 @@ export default function NuevoInsumoClient({
                   Ítem serializable (tiene número de serie)
                 </label>
                 <p className="text-xs text-text-soft/70">{config.esSerializableHint}</p>
+
+                {esTecnologia && (
+                  <div className="space-y-4 rounded-xl border border-white/10 bg-white/[0.03] p-4">
+                    <p className="text-xs uppercase tracking-wider text-brand-green font-medium">Detalle técnico</p>
+                    <div className="grid grid-cols-2 gap-4">
+                      <Field label="Empresa">
+                        <Input value={form.empresa} onChange={(e) => setForm((p) => ({ ...p, empresa: e.target.value }))} placeholder="Empresa propietaria" />
+                      </Field>
+                      <Field label="Tipo de insumo">
+                        <TipoInsumoSelect
+                          value={form.tipoInsumo}
+                          onChange={(v) => setForm((p) => ({ ...p, tipoInsumo: v }))}
+                          sugerencias={tiposInsumoSugeridos}
+                        />
+                      </Field>
+                      <Field label="RAM [GB]">
+                        <Input type="number" min={0} value={form.ram} onChange={(e) => setForm((p) => ({ ...p, ram: e.target.value }))} placeholder="16" />
+                      </Field>
+                      <Field label="Almacenamiento [GB]">
+                        <Input type="number" min={0} value={form.almacenamiento} onChange={(e) => setForm((p) => ({ ...p, almacenamiento: e.target.value }))} placeholder="512" />
+                      </Field>
+                      <Field label="Número de serie">
+                        <Input value={form.numeroSerie} onChange={(e) => setForm((p) => ({ ...p, numeroSerie: e.target.value }))} />
+                      </Field>
+                      <Field label="Sistema operativo">
+                        <Input value={form.sistemaOperativo} onChange={(e) => setForm((p) => ({ ...p, sistemaOperativo: e.target.value }))} placeholder="Windows 11" />
+                      </Field>
+                      <Field label="Estado equipo">
+                        <AppSelect
+                          value={form.estadoEquipo}
+                          onChange={(v) => setForm((p) => ({ ...p, estadoEquipo: v }))}
+                          placeholder="Seleccionar…"
+                          options={ESTADO_EQUIPO_OPTIONS}
+                        />
+                      </Field>
+                      <Field label="Precio referencia">
+                        <Input type="number" min={0} step="0.01" value={form.precioReferencia} onChange={(e) => setForm((p) => ({ ...p, precioReferencia: e.target.value }))} />
+                      </Field>
+                      <Field label="Precio vendible">
+                        <Input type="number" min={0} step="0.01" value={form.precioVendible} onChange={(e) => setForm((p) => ({ ...p, precioVendible: e.target.value }))} />
+                      </Field>
+                      <Field label="Precio vendido">
+                        <Input type="number" min={0} step="0.01" value={form.precioVendido} onChange={(e) => setForm((p) => ({ ...p, precioVendido: e.target.value }))} />
+                      </Field>
+                    </div>
+                    <label className="flex items-center gap-2 text-sm cursor-pointer">
+                      <input type="checkbox" checked={form.formateado} onChange={(e) => setForm((p) => ({ ...p, formateado: e.target.checked }))} className="rounded" />
+                      Formateado
+                    </label>
+                  </div>
+                )}
 
                 {error && <p className="text-sm text-red-400">{error}</p>}
 

@@ -8,7 +8,15 @@ import AppSelect from "@/components/AppSelect";
 import Modal from "@/components/Modal";
 import { crearCategoria, editarInsumo, registrarMovimiento } from "@/app/api/inventario/actions";
 import QRModal from "@/components/QRModal";
+import TipoInsumoSelect from "@/components/TipoInsumoSelect";
 import { TIPOS_CATEGORIA } from "@/lib/categoriaTipos";
+
+const ESTADO_EQUIPO_OPTIONS = [
+  { value: "nuevo", label: "Nuevo" },
+  { value: "usado", label: "Usado" },
+  { value: "dañado", label: "Dañado" },
+  { value: "en_reparacion", label: "En reparación" },
+];
 
 type Categoria = { id: string; nombre: string; tipo: string; _count: { insumos: number } };
 type Proveedor = { id: string; nombre: string };
@@ -17,8 +25,12 @@ type Insumo = {
   marca: string | null; modelo: string | null; unidad: string;
   stockActual: number; stockMinimo: number; ubicacion: string | null;
   esSerializable: boolean; categoriaId: string;
-  categoria: { nombre: string }; proveedor: { nombre: string } | null;
+  categoria: { nombre: string; tipo: string }; proveedor: { nombre: string } | null;
   proveedorId: string | null;
+  empresa: string | null; tipoInsumo: string | null; ram: number | null; almacenamiento: number | null;
+  numeroSerie: string | null; sistemaOperativo: string | null; estadoEquipo: string | null;
+  precioReferencia: number | null; precioVendible: number | null; precioVendido: number | null;
+  formateado: boolean;
 };
 
 const Field = ({ label, children }: { label: string; children: React.ReactNode }) => (
@@ -34,9 +46,10 @@ const Input = (props: React.InputHTMLAttributes<HTMLInputElement>) => (
 
 
 export default function InventarioClient({
-  categorias, insumos, proveedores, puedeCrear, activeTab = "catalogo",
+  categorias, insumos, proveedores, puedeCrear, activeTab = "catalogo", tiposInsumoSugeridos = [],
 }: {
   categorias: Categoria[]; insumos: Insumo[]; proveedores: Proveedor[]; puedeCrear: boolean; activeTab?: "catalogo" | "insumos";
+  tiposInsumoSugeridos?: string[];
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -67,7 +80,14 @@ export default function InventarioClient({
   const handleEditarInsumo = async () => {
     if (!modalEditar) return;
     setError("");
-    const r = await editarInsumo(modalEditar.id, fEdit);
+    const r = await editarInsumo(modalEditar.id, {
+      ...fEdit,
+      ram: fEdit.ram ? +fEdit.ram : undefined,
+      almacenamiento: fEdit.almacenamiento ? +fEdit.almacenamiento : undefined,
+      precioReferencia: fEdit.precioReferencia ? +fEdit.precioReferencia : undefined,
+      precioVendible: fEdit.precioVendible ? +fEdit.precioVendible : undefined,
+      precioVendido: fEdit.precioVendido ? +fEdit.precioVendido : undefined,
+    });
     if (!r.success) { setError(r.error ?? "Error"); return; }
     setModalEditar(null); refresh();
   };
@@ -87,10 +107,19 @@ export default function InventarioClient({
       unidad: ins.unidad, stockMinimo: ins.stockMinimo,
       ubicacion: ins.ubicacion ?? "", proveedorId: ins.proveedorId ?? "",
       categoriaId: ins.categoriaId,
+      empresa: ins.empresa ?? "", tipoInsumo: ins.tipoInsumo ?? "",
+      ram: ins.ram ?? "", almacenamiento: ins.almacenamiento ?? "",
+      numeroSerie: ins.numeroSerie ?? "", sistemaOperativo: ins.sistemaOperativo ?? "",
+      estadoEquipo: ins.estadoEquipo ?? "",
+      precioReferencia: ins.precioReferencia ?? "", precioVendible: ins.precioVendible ?? "",
+      precioVendido: ins.precioVendido ?? "", formateado: ins.formateado,
     });
     setModalEditar(ins);
     setError("");
   };
+
+  const categoriaEditarTipo = categorias.find((c) => c.id === fEdit.categoriaId)?.tipo;
+  const editarEsTecnologia = categoriaEditarTipo === "tecnologia";
 
   return (
     <>
@@ -238,6 +267,42 @@ export default function InventarioClient({
             </Field>
           </div>
           <Field label="Descripción"><Input value={fEdit.descripcion ?? ""} onChange={e => setFEdit((p: any) => ({ ...p, descripcion: e.target.value }))} /></Field>
+
+          {editarEsTecnologia && (
+            <div className="space-y-4 rounded-xl border border-white/10 bg-white/[0.03] p-4">
+              <p className="text-xs uppercase tracking-wider text-brand-green font-medium">Detalle técnico</p>
+              <div className="grid grid-cols-2 gap-4">
+                <Field label="Empresa"><Input value={fEdit.empresa ?? ""} onChange={e => setFEdit((p: any) => ({ ...p, empresa: e.target.value }))} /></Field>
+                <Field label="Tipo de insumo">
+                  <TipoInsumoSelect
+                    value={fEdit.tipoInsumo ?? ""}
+                    onChange={(v) => setFEdit((p: any) => ({ ...p, tipoInsumo: v }))}
+                    sugerencias={tiposInsumoSugeridos}
+                  />
+                </Field>
+                <Field label="RAM [GB]"><Input type="number" min={0} value={fEdit.ram ?? ""} onChange={e => setFEdit((p: any) => ({ ...p, ram: e.target.value }))} /></Field>
+                <Field label="Almacenamiento [GB]"><Input type="number" min={0} value={fEdit.almacenamiento ?? ""} onChange={e => setFEdit((p: any) => ({ ...p, almacenamiento: e.target.value }))} /></Field>
+                <Field label="Número de serie"><Input value={fEdit.numeroSerie ?? ""} onChange={e => setFEdit((p: any) => ({ ...p, numeroSerie: e.target.value }))} /></Field>
+                <Field label="Sistema operativo"><Input value={fEdit.sistemaOperativo ?? ""} onChange={e => setFEdit((p: any) => ({ ...p, sistemaOperativo: e.target.value }))} /></Field>
+                <Field label="Estado equipo">
+                  <AppSelect
+                    value={fEdit.estadoEquipo ?? ""}
+                    onChange={(v) => setFEdit((p: any) => ({ ...p, estadoEquipo: v }))}
+                    placeholder="Seleccionar…"
+                    options={ESTADO_EQUIPO_OPTIONS}
+                  />
+                </Field>
+                <Field label="Precio referencia"><Input type="number" min={0} step="0.01" value={fEdit.precioReferencia ?? ""} onChange={e => setFEdit((p: any) => ({ ...p, precioReferencia: e.target.value }))} /></Field>
+                <Field label="Precio vendible"><Input type="number" min={0} step="0.01" value={fEdit.precioVendible ?? ""} onChange={e => setFEdit((p: any) => ({ ...p, precioVendible: e.target.value }))} /></Field>
+                <Field label="Precio vendido"><Input type="number" min={0} step="0.01" value={fEdit.precioVendido ?? ""} onChange={e => setFEdit((p: any) => ({ ...p, precioVendido: e.target.value }))} /></Field>
+              </div>
+              <label className="flex items-center gap-2 text-sm cursor-pointer">
+                <input type="checkbox" checked={!!fEdit.formateado} onChange={e => setFEdit((p: any) => ({ ...p, formateado: e.target.checked }))} className="rounded" />
+                Formateado
+              </label>
+            </div>
+          )}
+
           {error && <p className="text-sm text-red-400">{error}</p>}
           <div className="flex gap-3 pt-2">
             <button onClick={() => setModalEditar(null)} className="btn-ghost flex-1 rounded-lg py-2 text-sm">Cancelar</button>

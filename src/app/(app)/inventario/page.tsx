@@ -10,7 +10,7 @@ const fmt = (d: Date) => new Date(d).toLocaleDateString("es-CL");
 export default async function InventarioPage() {
   const { permisos } = await requireModulo("inventario");
 
-  const [insumos, categorias, movimientos, proveedores] = await Promise.all([
+  const [insumos, categorias, movimientos, proveedores, tiposInsumoRaw] = await Promise.all([
     prisma.insumo.findMany({
       include: { categoria: true, proveedor: true },
       orderBy: { nombre: "asc" },
@@ -18,7 +18,15 @@ export default async function InventarioPage() {
     prisma.categoria.findMany({ include: { _count: { select: { insumos: true } } }, orderBy: { nombre: "asc" } }),
     prisma.movimiento.findMany({ include: { insumo: true }, orderBy: { fecha: "desc" }, take: 50 }),
     prisma.proveedor.findMany({ orderBy: { nombre: "asc" }, select: { id: true, nombre: true } }),
+    prisma.insumo.findMany({
+      where: { tipoInsumo: { not: null } },
+      select: { tipoInsumo: true },
+      distinct: ["tipoInsumo"],
+      orderBy: { tipoInsumo: "asc" },
+    }),
   ]);
+
+  const tiposInsumoSugeridos = tiposInsumoRaw.map((t) => t.tipoInsumo as string);
 
   const puedeCrear = permisos.inventario.crear;
 
@@ -45,6 +53,7 @@ export default async function InventarioPage() {
                 insumos={insumosSerial as any}
                 proveedores={proveedores}
                 puedeCrear={puedeCrear}
+                tiposInsumoSugeridos={tiposInsumoSugeridos}
                 activeTab="catalogo"
               />
             ),
@@ -59,6 +68,7 @@ export default async function InventarioPage() {
                 insumos={insumosSerial as any}
                 proveedores={proveedores}
                 puedeCrear={puedeCrear}
+                tiposInsumoSugeridos={tiposInsumoSugeridos}
                 activeTab="insumos"
               />
             ),

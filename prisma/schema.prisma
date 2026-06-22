@@ -25,58 +25,58 @@ model Perfil {
 }
 
 model Colaborador {
-  id               String         @id @default(cuid())
+  id                  String                @id @default(cuid())
   // Identidad
-  nombre           String
-  apellidoPaterno  String
-  apellidoMaterno  String?
-  correo           String         @unique
-  passwordHash     String
+  nombre              String
+  apellidoPaterno     String
+  apellidoMaterno     String?
+  correo              String                @unique
+  passwordHash        String
   // Datos personales (editable por usuario)
-  telefonoPersonal String?
-  rutPersonal      String?        @unique
-  direccion        String?
-  ciudad           String?
-  region           String?
-  fechaNacimiento  DateTime?
-  numeroEmergencia String?
-  fotoPerfil       String?
+  telefonoPersonal    String?
+  rutPersonal         String?               @unique
+  direccion           String?
+  ciudad              String?
+  region              String?
+  fechaNacimiento     DateTime?
+  numeroEmergencia    String?
+  fotoPerfil          String?
   // Datos empresa (gestión admin)
-  area             String?
-  cargo            String?
+  area                String?
+  cargo               String?
   telefonoCorporativo String?
-  centrodeCosto    String?
-  jefDirectoId     String?
-  jefDirecto       Colaborador?   @relation("JefeDirecto", fields: [jefDirectoId], references: [id])
-  subordinados     Colaborador[]  @relation("JefeDirecto")
-  disponibilidad   String         @default("activo") // activo | baja | excedencia
+  centrodeCosto       String?
+  jefDirectoId        String?
+  jefDirecto          Colaborador?          @relation("JefeDirecto", fields: [jefDirectoId], references: [id])
+  subordinados        Colaborador[]         @relation("JefeDirecto")
+  disponibilidad      String                @default("activo") // activo | baja | excedencia
   fechaEgresoEsperado DateTime?
   // Sistema
-  perfilId         String
-  perfil           Perfil         @relation(fields: [perfilId], references: [id])
-  estado           String         @default("activo") // activo | inactivo
-  fechaIngreso     DateTime       @default(now())
+  perfilId            String
+  perfil              Perfil                @relation(fields: [perfilId], references: [id])
+  estado              String                @default("activo") // activo | inactivo
+  fechaIngreso        DateTime              @default(now())
   // Seguridad
-  intentosFallidos Int            @default(0)
-  bloqueadoHasta   DateTime?
-  ultimoAcceso     DateTime?
-  asignaciones     Asignacion[]
-  solicitudes      Solicitud[]
-  logs             LogAuditoria[]
-  proyectos        ColaboradorProyecto[]
-  createdAt        DateTime       @default(now())
+  intentosFallidos    Int                   @default(0)
+  bloqueadoHasta      DateTime?
+  ultimoAcceso        DateTime?
+  asignaciones        Asignacion[]
+  solicitudes         Solicitud[]
+  logs                LogAuditoria[]
+  proyectos           ColaboradorProyecto[]
+  createdAt           DateTime              @default(now())
 }
 
 // ----------------------- Proyectos (integración Movisuite) -----------------------
 
 model Proyecto {
-  id            String   @id @default(cuid())
+  id            String                @id @default(cuid())
   nombre        String
   descripcion   String?
-  codigoExterno String?  // código en Movisuite (se llena al sincronizar mañana)
-  activo        Boolean  @default(true)
+  codigoExterno String? // código en Movisuite (se llena al sincronizar mañana)
+  activo        Boolean               @default(true)
   colaboradores ColaboradorProyecto[]
-  createdAt     DateTime @default(now())
+  createdAt     DateTime              @default(now())
 }
 
 model ColaboradorProyecto {
@@ -84,7 +84,7 @@ model ColaboradorProyecto {
   proyectoId    String
   colaborador   Colaborador @relation(fields: [colaboradorId], references: [id], onDelete: Cascade)
   proyecto      Proyecto    @relation(fields: [proyectoId], references: [id], onDelete: Cascade)
-  asignadoEn   DateTime    @default(now())
+  asignadoEn    DateTime    @default(now())
 
   @@id([colaboradorId, proyectoId])
 }
@@ -100,27 +100,39 @@ model Categoria {
 }
 
 model Insumo {
-  id             String            @id @default(cuid())
-  nombre         String
-  descripcion    String?
-  categoriaId    String
-  categoria      Categoria         @relation(fields: [categoriaId], references: [id])
-  sku            String?
-  marca          String?
-  modelo         String?
-  unidad         String            @default("unidad")
-  stockActual    Int               @default(0)
-  stockMinimo    Int               @default(0)
-  esSerializable Boolean           @default(false)
-  ubicacion      String?
-  imagen         String?
-  proveedorId    String?
-  proveedor      Proveedor?        @relation(fields: [proveedorId], references: [id])
-  items          ItemSerializado[]
-  asignaciones   Asignacion[]
-  movimientos    Movimiento[]
-  solicitudItems SolicitudItem[]
-  createdAt      DateTime          @default(now())
+  id               String            @id @default(cuid())
+  nombre           String
+  descripcion      String?
+  categoriaId      String
+  categoria        Categoria         @relation(fields: [categoriaId], references: [id])
+  sku              String?
+  marca            String?
+  modelo           String?
+  unidad           String            @default("unidad")
+  stockActual      Int               @default(0)
+  stockMinimo      Int               @default(0)
+  esSerializable   Boolean           @default(false)
+  ubicacion        String?
+  imagen           String?
+  proveedorId      String?
+  proveedor        Proveedor?        @relation(fields: [proveedorId], references: [id])
+  items            ItemSerializado[]
+  asignaciones     Asignacion[]
+  movimientos      Movimiento[]
+  solicitudItems   SolicitudItem[]
+  // Detalle técnico — usado solo por insumos de categoría "tecnologia"
+  empresa          String?
+  tipoInsumo       String?
+  ram              Int? // GB
+  almacenamiento   Int? // GB
+  numeroSerie      String?
+  sistemaOperativo String?
+  estadoEquipo     String? // nuevo | usado | dañado | en_reparacion
+  precioReferencia Float?
+  precioVendible   Float?
+  precioVendido    Float?
+  formateado       Boolean           @default(false)
+  createdAt        DateTime          @default(now())
 }
 
 model ItemSerializado {
