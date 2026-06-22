@@ -8,6 +8,7 @@ import AppSelect from "@/components/AppSelect";
 import Modal from "@/components/Modal";
 import { crearCategoria, editarInsumo, registrarMovimiento } from "@/app/api/inventario/actions";
 import QRModal from "@/components/QRModal";
+import { TIPOS_CATEGORIA } from "@/lib/categoriaTipos";
 
 type Categoria = { id: string; nombre: string; tipo: string; _count: { insumos: number } };
 type Proveedor = { id: string; nombre: string };
@@ -19,8 +20,6 @@ type Insumo = {
   categoria: { nombre: string }; proveedor: { nombre: string } | null;
   proveedorId: string | null;
 };
-
-const TIPOS_CATEGORIA = ["tecnologia","oficina","cocina","baño","aseo","mobiliario","papeleria","otros"];
 
 const Field = ({ label, children }: { label: string; children: React.ReactNode }) => (
   <div className="space-y-1">
@@ -169,16 +168,35 @@ export default function InventarioClient({
       }
 
       {/* Modal crear categoría */}
-      <Modal title="Nueva categoría de insumo" open={modalCat} onClose={() => setModalCat(false)} size="sm">
-        <div className="space-y-4">
-          <Field label="Nombre"><Input value={fCat.nombre} onChange={e => setFCat(p => ({ ...p, nombre: e.target.value }))} placeholder="Ej: Papelería" /></Field>
-          <Field label="Tipo">
-            <AppSelect
-              value={fCat.tipo}
-              onChange={(v) => setFCat(p => ({ ...p, tipo: v }))}
-              options={TIPOS_CATEGORIA.map(t => ({ value: t, label: t }))}
-            />
+      <Modal title="Nueva categoría de insumo" open={modalCat} onClose={() => setModalCat(false)} size="md">
+        <div className="space-y-5">
+          <Field label="Nombre de la categoría">
+            <Input value={fCat.nombre} onChange={e => setFCat(p => ({ ...p, nombre: e.target.value }))} placeholder="Ej: Papelería" />
           </Field>
+          <div className="space-y-1.5">
+            <label className="text-xs uppercase tracking-wider text-text-soft font-medium">Tipo</label>
+            <div className="grid grid-cols-4 gap-2">
+              {TIPOS_CATEGORIA.map((t) => {
+                const Icon = t.icon;
+                const active = fCat.tipo === t.value;
+                return (
+                  <button
+                    key={t.value}
+                    type="button"
+                    onClick={() => setFCat(p => ({ ...p, tipo: t.value }))}
+                    className={`flex flex-col items-center gap-1.5 rounded-xl border p-3 text-center transition-all ${
+                      active
+                        ? "border-brand-green/50 bg-brand-green/10 text-brand-green"
+                        : "border-white/10 bg-white/5 text-text-soft hover:border-white/25 hover:bg-white/8"
+                    }`}
+                  >
+                    <Icon className="h-5 w-5" />
+                    <span className="text-[11px] font-medium leading-tight">{t.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
           {error && <p className="text-sm text-red-400">{error}</p>}
           <div className="flex gap-3 pt-2">
             <button onClick={() => setModalCat(false)} className="btn-ghost flex-1 rounded-lg py-2 text-sm">Cancelar</button>

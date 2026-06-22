@@ -5,6 +5,7 @@ import { getSession } from "@/lib/session";
 import { PageHeader, Table, Badge, EmptyRow } from "@/components/ui";
 import Tabs from "@/components/Tabs";
 import MisAsignacionesClient from "./MisAsignacionesClient";
+import HistorialTimeline from "./HistorialTimeline";
 
 const fmt = (d: Date) => new Date(d).toLocaleDateString("es-CL");
 
@@ -42,10 +43,15 @@ export default async function MisAsignacionesPage() {
 
   return (
     <div>
-      <PageHeader title="Mis asignaciones" subtitle="Lo que tienes asignado y tus solicitudes" icon={<Package className="h-5 w-5" />} />
+      <PageHeader title="Mis asignaciones" subtitle="El historial completo de tus insumos" icon={<Package className="h-5 w-5" />} />
 
       <Tabs
         tabs={[
+          {
+            id: "historial",
+            label: "Historial",
+            content: <HistorialTimeline asignaciones={asignaciones} solicitudes={solicitudes} />,
+          },
           {
             id: "asignados",
             label: "Asignados a mí",

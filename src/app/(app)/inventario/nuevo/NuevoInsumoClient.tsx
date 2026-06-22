@@ -3,78 +3,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
-import {
-  Cpu, Briefcase, ChefHat, Bath, SprayCan, Armchair, FileText, Package,
-  ArrowLeft, Check,
-} from "@/components/icons";
+import { ArrowLeft, Check } from "@/components/icons";
 import AppSelect from "@/components/AppSelect";
 import { crearInsumo } from "@/app/api/inventario/actions";
+import { TIPO_CONFIG, DEFAULT_TIPO_CONFIG as DEFAULT_CONFIG } from "@/lib/categoriaTipos";
 
 type Categoria = { id: string; nombre: string; tipo: string; icono: string | null; _count: { insumos: number } };
 type Proveedor = { id: string; nombre: string };
-
-const TIPO_CONFIG: Record<string, {
-  icon: typeof Cpu;
-  placeholderNombre: string;
-  marcaLabel: string;
-  showModelo: boolean;
-  showSku: boolean;
-  esSerializableDefault: boolean;
-  esSerializableHint: string;
-  unidadDefault: string;
-  unidadOptions: string[];
-}> = {
-  tecnologia: {
-    icon: Cpu, placeholderNombre: "Ej: Mouse inalámbrico Logitech",
-    marcaLabel: "Marca / Fabricante", showModelo: true, showSku: true,
-    esSerializableDefault: true, esSerializableHint: "Los equipos electrónicos suelen tener N° de serie único",
-    unidadDefault: "unidad", unidadOptions: ["unidad", "caja", "par", "set"],
-  },
-  oficina: {
-    icon: Briefcase, placeholderNombre: "Ej: Resma de papel carta",
-    marcaLabel: "Marca", showModelo: false, showSku: true,
-    esSerializableDefault: false, esSerializableHint: "Marca si esta unidad lleva un N° de serie individual",
-    unidadDefault: "resma", unidadOptions: ["unidad", "caja", "paquete", "resma", "set"],
-  },
-  cocina: {
-    icon: ChefHat, placeholderNombre: "Ej: Café molido 500g",
-    marcaLabel: "Marca", showModelo: false, showSku: false,
-    esSerializableDefault: false, esSerializableHint: "Marca si esta unidad lleva un N° de serie individual",
-    unidadDefault: "unidad", unidadOptions: ["unidad", "caja", "paquete", "litro", "kg"],
-  },
-  "baño": {
-    icon: Bath, placeholderNombre: "Ej: Papel higiénico",
-    marcaLabel: "Marca", showModelo: false, showSku: false,
-    esSerializableDefault: false, esSerializableHint: "Marca si esta unidad lleva un N° de serie individual",
-    unidadDefault: "paquete", unidadOptions: ["unidad", "paquete", "caja", "litro"],
-  },
-  aseo: {
-    icon: SprayCan, placeholderNombre: "Ej: Detergente multiuso",
-    marcaLabel: "Marca", showModelo: false, showSku: false,
-    esSerializableDefault: false, esSerializableHint: "Marca si esta unidad lleva un N° de serie individual",
-    unidadDefault: "litro", unidadOptions: ["unidad", "litro", "caja", "kg"],
-  },
-  mobiliario: {
-    icon: Armchair, placeholderNombre: "Ej: Silla ergonómica",
-    marcaLabel: "Marca / Fabricante", showModelo: true, showSku: true,
-    esSerializableDefault: false, esSerializableHint: "Marca si esta unidad lleva un N° de serie individual",
-    unidadDefault: "unidad", unidadOptions: ["unidad", "set", "par"],
-  },
-  papeleria: {
-    icon: FileText, placeholderNombre: "Ej: Cuaderno universitario",
-    marcaLabel: "Marca", showModelo: false, showSku: true,
-    esSerializableDefault: false, esSerializableHint: "Marca si esta unidad lleva un N° de serie individual",
-    unidadDefault: "unidad", unidadOptions: ["unidad", "caja", "paquete", "resma", "set"],
-  },
-  otros: {
-    icon: Package, placeholderNombre: "Ej: Artículo varios",
-    marcaLabel: "Marca", showModelo: true, showSku: true,
-    esSerializableDefault: false, esSerializableHint: "Marca si esta unidad lleva un N° de serie individual",
-    unidadDefault: "unidad", unidadOptions: ["unidad", "caja", "paquete", "litro", "kg", "par", "set"],
-  },
-};
-
-const DEFAULT_CONFIG = TIPO_CONFIG.otros;
 
 const Field = ({ label, children }: { label: string; children: React.ReactNode }) => (
   <div className="space-y-1">
