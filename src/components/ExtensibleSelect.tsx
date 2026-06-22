@@ -5,10 +5,11 @@ import AppSelect from "@/components/AppSelect";
 
 const NUEVO = "__nuevo__";
 
-export default function TipoInsumoSelect({
-  value, onChange, sugerencias,
+export default function ExtensibleSelect({
+  value, onChange, sugerencias, placeholder = "Seleccionar…", placeholderNuevo = "Escribe un valor nuevo",
 }: {
   value: string; onChange: (v: string) => void; sugerencias: string[];
+  placeholder?: string; placeholderNuevo?: string;
 }) {
   const [modoNuevo, setModoNuevo] = useState(false);
 
@@ -18,7 +19,7 @@ export default function TipoInsumoSelect({
         <input
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="Ej: Notebook"
+          placeholder={placeholderNuevo}
           className="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-2 text-sm placeholder:text-text-soft/50 focus:border-brand-green focus:outline-none focus:ring-2 focus:ring-brand-green/20 transition-all"
         />
         {sugerencias.length > 0 && (
@@ -41,10 +42,10 @@ export default function TipoInsumoSelect({
         if (v === NUEVO) { setModoNuevo(true); onChange(""); return; }
         onChange(v);
       }}
-      placeholder="Seleccionar tipo…"
+      placeholder={placeholder}
       options={[
         ...sugerencias.map((t) => ({ value: t, label: t })),
-        { value: NUEVO, label: "+ Agregar nuevo tipo…" },
+        { value: NUEVO, label: "+ Agregar nuevo…" },
       ]}
     />
   );

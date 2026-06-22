@@ -8,8 +8,9 @@ import AppSelect from "@/components/AppSelect";
 import Modal from "@/components/Modal";
 import { crearCategoria, editarInsumo, registrarMovimiento } from "@/app/api/inventario/actions";
 import QRModal from "@/components/QRModal";
-import TipoInsumoSelect from "@/components/TipoInsumoSelect";
+import ExtensibleSelect from "@/components/ExtensibleSelect";
 import { TIPOS_CATEGORIA } from "@/lib/categoriaTipos";
+import { MARCAS_TECNOLOGIA, SISTEMAS_OPERATIVOS } from "@/lib/marcasTecnologia";
 
 const ESTADO_EQUIPO_OPTIONS = [
   { value: "nuevo", label: "Nuevo" },
@@ -29,7 +30,7 @@ type Insumo = {
   proveedorId: string | null;
   empresa: string | null; tipoInsumo: string | null; ram: number | null; almacenamiento: number | null;
   numeroSerie: string | null; sistemaOperativo: string | null; estadoEquipo: string | null;
-  precioReferencia: number | null; precioVendible: number | null; precioVendido: number | null;
+  precioReferencia: number | null;
   formateado: boolean;
 };
 
@@ -85,8 +86,6 @@ export default function InventarioClient({
       ram: fEdit.ram ? +fEdit.ram : undefined,
       almacenamiento: fEdit.almacenamiento ? +fEdit.almacenamiento : undefined,
       precioReferencia: fEdit.precioReferencia ? +fEdit.precioReferencia : undefined,
-      precioVendible: fEdit.precioVendible ? +fEdit.precioVendible : undefined,
-      precioVendido: fEdit.precioVendido ? +fEdit.precioVendido : undefined,
     });
     if (!r.success) { setError(r.error ?? "Error"); return; }
     setModalEditar(null); refresh();
@@ -111,8 +110,7 @@ export default function InventarioClient({
       ram: ins.ram ?? "", almacenamiento: ins.almacenamiento ?? "",
       numeroSerie: ins.numeroSerie ?? "", sistemaOperativo: ins.sistemaOperativo ?? "",
       estadoEquipo: ins.estadoEquipo ?? "",
-      precioReferencia: ins.precioReferencia ?? "", precioVendible: ins.precioVendible ?? "",
-      precioVendido: ins.precioVendido ?? "", formateado: ins.formateado,
+      precioReferencia: ins.precioReferencia ?? "", formateado: ins.formateado,
     });
     setModalEditar(ins);
     setError("");
@@ -247,7 +245,18 @@ export default function InventarioClient({
               />
             </Field>
             <Field label="SKU"><Input value={fEdit.sku ?? ""} onChange={e => setFEdit((p: any) => ({ ...p, sku: e.target.value }))} /></Field>
-            <Field label="Marca"><Input value={fEdit.marca ?? ""} onChange={e => setFEdit((p: any) => ({ ...p, marca: e.target.value }))} /></Field>
+            <Field label="Marca">
+              {editarEsTecnologia ? (
+                <ExtensibleSelect
+                  value={fEdit.marca ?? ""}
+                  onChange={(v) => setFEdit((p: any) => ({ ...p, marca: v }))}
+                  sugerencias={MARCAS_TECNOLOGIA}
+                  placeholderNuevo="Escribe la marca"
+                />
+              ) : (
+                <Input value={fEdit.marca ?? ""} onChange={e => setFEdit((p: any) => ({ ...p, marca: e.target.value }))} />
+              )}
+            </Field>
             <Field label="Modelo"><Input value={fEdit.modelo ?? ""} onChange={e => setFEdit((p: any) => ({ ...p, modelo: e.target.value }))} /></Field>
             <Field label="Unidad">
               <AppSelect
@@ -274,16 +283,24 @@ export default function InventarioClient({
               <div className="grid grid-cols-2 gap-4">
                 <Field label="Empresa"><Input value={fEdit.empresa ?? ""} onChange={e => setFEdit((p: any) => ({ ...p, empresa: e.target.value }))} /></Field>
                 <Field label="Tipo de insumo">
-                  <TipoInsumoSelect
+                  <ExtensibleSelect
                     value={fEdit.tipoInsumo ?? ""}
                     onChange={(v) => setFEdit((p: any) => ({ ...p, tipoInsumo: v }))}
                     sugerencias={tiposInsumoSugeridos}
+                    placeholderNuevo="Ej: Notebook"
                   />
                 </Field>
                 <Field label="RAM [GB]"><Input type="number" min={0} value={fEdit.ram ?? ""} onChange={e => setFEdit((p: any) => ({ ...p, ram: e.target.value }))} /></Field>
                 <Field label="Almacenamiento [GB]"><Input type="number" min={0} value={fEdit.almacenamiento ?? ""} onChange={e => setFEdit((p: any) => ({ ...p, almacenamiento: e.target.value }))} /></Field>
                 <Field label="Número de serie"><Input value={fEdit.numeroSerie ?? ""} onChange={e => setFEdit((p: any) => ({ ...p, numeroSerie: e.target.value }))} /></Field>
-                <Field label="Sistema operativo"><Input value={fEdit.sistemaOperativo ?? ""} onChange={e => setFEdit((p: any) => ({ ...p, sistemaOperativo: e.target.value }))} /></Field>
+                <Field label="Sistema operativo">
+                  <ExtensibleSelect
+                    value={fEdit.sistemaOperativo ?? ""}
+                    onChange={(v) => setFEdit((p: any) => ({ ...p, sistemaOperativo: v }))}
+                    sugerencias={SISTEMAS_OPERATIVOS}
+                    placeholderNuevo="Escribe el sistema operativo"
+                  />
+                </Field>
                 <Field label="Estado equipo">
                   <AppSelect
                     value={fEdit.estadoEquipo ?? ""}
@@ -293,8 +310,6 @@ export default function InventarioClient({
                   />
                 </Field>
                 <Field label="Precio referencia"><Input type="number" min={0} step="0.01" value={fEdit.precioReferencia ?? ""} onChange={e => setFEdit((p: any) => ({ ...p, precioReferencia: e.target.value }))} /></Field>
-                <Field label="Precio vendible"><Input type="number" min={0} step="0.01" value={fEdit.precioVendible ?? ""} onChange={e => setFEdit((p: any) => ({ ...p, precioVendible: e.target.value }))} /></Field>
-                <Field label="Precio vendido"><Input type="number" min={0} step="0.01" value={fEdit.precioVendido ?? ""} onChange={e => setFEdit((p: any) => ({ ...p, precioVendido: e.target.value }))} /></Field>
               </div>
               <label className="flex items-center gap-2 text-sm cursor-pointer">
                 <input type="checkbox" checked={!!fEdit.formateado} onChange={e => setFEdit((p: any) => ({ ...p, formateado: e.target.checked }))} className="rounded" />

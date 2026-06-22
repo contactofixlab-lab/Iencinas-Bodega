@@ -29,7 +29,7 @@ export async function crearInsumo(data: {
   stockMinimo: number; ubicacion?: string; proveedorId?: string; esSerializable: boolean;
   empresa?: string; tipoInsumo?: string; ram?: number; almacenamiento?: number;
   numeroSerie?: string; sistemaOperativo?: string; estadoEquipo?: string;
-  precioReferencia?: number; precioVendible?: number; precioVendido?: number; formateado?: boolean;
+  precioReferencia?: number; formateado?: boolean;
 }) {
   const session = await getSessionOrRedirect();
   try {
@@ -55,8 +55,6 @@ export async function crearInsumo(data: {
         sistemaOperativo: data.sistemaOperativo || null,
         estadoEquipo: data.estadoEquipo || null,
         precioReferencia: data.precioReferencia ?? null,
-        precioVendible: data.precioVendible ?? null,
-        precioVendido: data.precioVendido ?? null,
         formateado: data.formateado ?? false,
       },
     });
@@ -84,7 +82,7 @@ export async function editarInsumo(id: string, data: {
   proveedorId?: string; categoriaId?: string;
   empresa?: string; tipoInsumo?: string; ram?: number; almacenamiento?: number;
   numeroSerie?: string; sistemaOperativo?: string; estadoEquipo?: string;
-  precioReferencia?: number; precioVendible?: number; precioVendido?: number; formateado?: boolean;
+  precioReferencia?: number; formateado?: boolean;
 }) {
   const session = await getSessionOrRedirect();
   try {
@@ -109,8 +107,6 @@ export async function editarInsumo(id: string, data: {
         sistemaOperativo: data.sistemaOperativo || null,
         estadoEquipo: data.estadoEquipo || null,
         precioReferencia: data.precioReferencia ?? null,
-        precioVendible: data.precioVendible ?? null,
-        precioVendido: data.precioVendido ?? null,
         formateado: data.formateado ?? false,
       },
     });

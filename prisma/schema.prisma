@@ -129,8 +129,6 @@ model Insumo {
   sistemaOperativo String?
   estadoEquipo     String? // nuevo | usado | dañado | en_reparacion
   precioReferencia Float?
-  precioVendible   Float?
-  precioVendido    Float?
   formateado       Boolean           @default(false)
   createdAt        DateTime          @default(now())
 }

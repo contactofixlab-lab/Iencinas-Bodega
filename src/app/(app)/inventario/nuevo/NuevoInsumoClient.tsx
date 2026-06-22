@@ -5,9 +5,10 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowLeft, Check } from "@/components/icons";
 import AppSelect from "@/components/AppSelect";
-import TipoInsumoSelect from "@/components/TipoInsumoSelect";
+import ExtensibleSelect from "@/components/ExtensibleSelect";
 import { crearInsumo } from "@/app/api/inventario/actions";
 import { TIPO_CONFIG, DEFAULT_TIPO_CONFIG as DEFAULT_CONFIG } from "@/lib/categoriaTipos";
+import { MARCAS_TECNOLOGIA, SISTEMAS_OPERATIVOS } from "@/lib/marcasTecnologia";
 
 type Categoria = { id: string; nombre: string; tipo: string; icono: string | null; _count: { insumos: number } };
 type Proveedor = { id: string; nombre: string };
@@ -50,7 +51,7 @@ export default function NuevoInsumoClient({
     proveedorId: "", esSerializable: false,
     empresa: "", tipoInsumo: "", ram: "", almacenamiento: "",
     numeroSerie: "", sistemaOperativo: "", estadoEquipo: "",
-    precioReferencia: "", precioVendible: "", precioVendido: "", formateado: false,
+    precioReferencia: "", formateado: false,
   });
 
   const elegirCategoria = (c: Categoria) => {
@@ -74,8 +75,6 @@ export default function NuevoInsumoClient({
       ram: form.ram ? +form.ram : undefined,
       almacenamiento: form.almacenamiento ? +form.almacenamiento : undefined,
       precioReferencia: form.precioReferencia ? +form.precioReferencia : undefined,
-      precioVendible: form.precioVendible ? +form.precioVendible : undefined,
-      precioVendido: form.precioVendido ? +form.precioVendido : undefined,
     });
     setSubmitting(false);
     if (!r.success) { setError(r.error ?? "Error al crear el insumo"); return; }
@@ -170,7 +169,16 @@ export default function NuevoInsumoClient({
                     </Field>
                   )}
                   <Field label={config.marcaLabel}>
-                    <Input value={form.marca} onChange={(e) => setForm((p) => ({ ...p, marca: e.target.value }))} />
+                    {esTecnologia ? (
+                      <ExtensibleSelect
+                        value={form.marca}
+                        onChange={(v) => setForm((p) => ({ ...p, marca: v }))}
+                        sugerencias={MARCAS_TECNOLOGIA}
+                        placeholderNuevo="Escribe la marca"
+                      />
+                    ) : (
+                      <Input value={form.marca} onChange={(e) => setForm((p) => ({ ...p, marca: e.target.value }))} />
+                    )}
                   </Field>
                   {config.showModelo && (
                     <Field label="Modelo">
@@ -220,10 +228,11 @@ export default function NuevoInsumoClient({
                         <Input value={form.empresa} onChange={(e) => setForm((p) => ({ ...p, empresa: e.target.value }))} placeholder="Empresa propietaria" />
                       </Field>
                       <Field label="Tipo de insumo">
-                        <TipoInsumoSelect
+                        <ExtensibleSelect
                           value={form.tipoInsumo}
                           onChange={(v) => setForm((p) => ({ ...p, tipoInsumo: v }))}
                           sugerencias={tiposInsumoSugeridos}
+                          placeholderNuevo="Ej: Notebook"
                         />
                       </Field>
                       <Field label="RAM [GB]">
@@ -236,7 +245,12 @@ export default function NuevoInsumoClient({
                         <Input value={form.numeroSerie} onChange={(e) => setForm((p) => ({ ...p, numeroSerie: e.target.value }))} />
                       </Field>
                       <Field label="Sistema operativo">
-                        <Input value={form.sistemaOperativo} onChange={(e) => setForm((p) => ({ ...p, sistemaOperativo: e.target.value }))} placeholder="Windows 11" />
+                        <ExtensibleSelect
+                          value={form.sistemaOperativo}
+                          onChange={(v) => setForm((p) => ({ ...p, sistemaOperativo: v }))}
+                          sugerencias={SISTEMAS_OPERATIVOS}
+                          placeholderNuevo="Escribe el sistema operativo"
+                        />
                       </Field>
                       <Field label="Estado equipo">
                         <AppSelect
@@ -248,12 +262,6 @@ export default function NuevoInsumoClient({
                       </Field>
                       <Field label="Precio referencia">
                         <Input type="number" min={0} step="0.01" value={form.precioReferencia} onChange={(e) => setForm((p) => ({ ...p, precioReferencia: e.target.value }))} />
-                      </Field>
-                      <Field label="Precio vendible">
-                        <Input type="number" min={0} step="0.01" value={form.precioVendible} onChange={(e) => setForm((p) => ({ ...p, precioVendible: e.target.value }))} />
-                      </Field>
-                      <Field label="Precio vendido">
-                        <Input type="number" min={0} step="0.01" value={form.precioVendido} onChange={(e) => setForm((p) => ({ ...p, precioVendido: e.target.value }))} />
                       </Field>
                     </div>
                     <label className="flex items-center gap-2 text-sm cursor-pointer">
