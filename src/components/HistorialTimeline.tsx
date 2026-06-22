@@ -13,16 +13,19 @@ type Evento = {
   tone: Tone;
 };
 
-type Asignacion = {
+export type HistorialAsignacion = {
   id: string; cantidad: number; numeroSerie: string | null;
   fechaAsignacion: Date; fechaDevolucion: Date | null; estado: string;
   insumo: { nombre: string };
 };
 
-type Solicitud = {
+export type HistorialSolicitud = {
   id: string; fecha: Date; estado: string; comentarioAdmin: string | null; fechaResolucion: Date | null;
   items: Array<{ id: string; cantidad: number; insumo: { nombre: string } }>;
 };
+
+type Asignacion = HistorialAsignacion;
+type Solicitud = HistorialSolicitud;
 
 const fmt = (d: Date) => new Date(d).toLocaleDateString("es-CL", { day: "2-digit", month: "short", year: "numeric" });
 

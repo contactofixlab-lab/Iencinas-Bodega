@@ -5,7 +5,7 @@ import { getSession } from "@/lib/session";
 import { PageHeader, Table, Badge, EmptyRow } from "@/components/ui";
 import Tabs from "@/components/Tabs";
 import MisAsignacionesClient from "./MisAsignacionesClient";
-import HistorialTimeline from "./HistorialTimeline";
+import HistorialTimeline from "@/components/HistorialTimeline";
 
 const fmt = (d: Date) => new Date(d).toLocaleDateString("es-CL");
 

@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, Phone, MapPin, Calendar, Building, Briefcase, User, Shield } from "@/components/icons";
+import { Mail, Phone, MapPin, Calendar, Building, Briefcase, User, Shield, History } from "@/components/icons";
 import type { Colaborador, Perfil } from "@prisma/client";
 import Modal from "@/components/Modal";
 import { actualizarPerfilPersonal } from "@/app/api/perfil/actions";
 import { useRouter } from "next/navigation";
+import HistorialTimeline, { type HistorialAsignacion, type HistorialSolicitud } from "@/components/HistorialTimeline";
 
 type ColaboradorConPerfil = Colaborador & { perfil: Perfil };
 
@@ -13,7 +14,13 @@ const Inp = (props: React.InputHTMLAttributes<HTMLInputElement>) => (
   <input {...props} className="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-2 text-sm focus:border-brand-green focus:outline-none focus:ring-2 focus:ring-brand-green/20 transition-all" />
 );
 
-export default function MiPerfil({ usuario }: { usuario: ColaboradorConPerfil }) {
+export default function MiPerfil({
+  usuario, asignaciones = [], solicitudes = [],
+}: {
+  usuario: ColaboradorConPerfil;
+  asignaciones?: HistorialAsignacion[];
+  solicitudes?: HistorialSolicitud[];
+}) {
   const router = useRouter();
   const [modal, setModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -226,6 +233,15 @@ export default function MiPerfil({ usuario }: { usuario: ColaboradorConPerfil })
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Historial de insumos: pasados, actuales y solicitudes pendientes */}
+      <div className="glass-strong rounded-xl p-6">
+        <div className="mb-6 flex items-center gap-2">
+          <History className="h-5 w-5 text-brand-green" />
+          <h2 className="text-xl font-semibold">Historial de insumos</h2>
+        </div>
+        <HistorialTimeline asignaciones={asignaciones} solicitudes={solicitudes} />
       </div>
 
       {/* Modal editar datos personales */}
